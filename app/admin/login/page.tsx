@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function AdminLoginPage() {
+export default function AdminLogin() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -11,73 +11,62 @@ export default function AdminLoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
 
-    try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        setError(data.error || "로그인 실패");
-        return;
-      }
-
-      // 로그인 성공 후 관리자 대시보드로 이동
-      router.push("/admin/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError("에러 발생");
+    if (!res.ok) {
+      setError(data.error);
+      return;
     }
+
+    // 취약한 인증 방식 intentionally
+    localStorage.setItem("admin", username);
+
+    router.push("/admin/new-post");
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "80px auto" }}>
-      <h1 style={{ textAlign: "center", marginBottom: 24 }}>관리자 로그인</h1>
+    <div className="wrapper">
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>관리자 로그인</h1>
 
       <form
         onSubmit={handleLogin}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          border: "1px solid #ddd",
-          borderRadius: 8,
-          padding: 20,
+          maxWidth: "400px",
+          margin: "0 auto",
+          background: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         }}
       >
         <input
-          placeholder="username"
+          placeholder="아이디"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
+          className="filter-input"
+          style={{ width: "100%", marginBottom: "10px" }}
         />
         <input
-          placeholder="password"
-          type="password"
+          placeholder="비밀번호"
           value={password}
+          type="password"
           onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: 10, borderRadius: 4, border: "1px solid #ccc" }}
+          className="filter-input"
+          style={{ width: "100%", marginBottom: "10px" }}
         />
+
         {error && (
-          <div style={{ color: "red", fontSize: "0.9rem" }}>{error}</div>
+          <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
         )}
-        <button
-          type="submit"
-          style={{
-            padding: 10,
-            borderRadius: 4,
-            border: "none",
-            background: "#333",
-            color: "white",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
+
+        <button className="filter-button" style={{ width: "100%" }}>
           로그인
         </button>
       </form>

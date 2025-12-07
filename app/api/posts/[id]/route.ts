@@ -1,25 +1,32 @@
+// app/api/posts/[id]/route.ts
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import Post from "@/models/Post";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+interface Params {
+  params: Promise<{ id: string }>;
+}
+
+export async function GET(req: Request, props: Params) {
   try {
-    await connectDB();
+    const { id } = await props.params;
 
-    const { id } = await props.params;   // ⭐ 반드시 await
-    console.log("API PARAM ID =", id);
-
-    const post = await Post.findById(id);
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        comments: {
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    });
 
     if (!post) {
-      console.log("Post not found for ID:", id);
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
     return NextResponse.json({ post });
-  } catch (err: any) {
-    console.error("Error in GET /api/posts/[id]:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "서버 에러" }, { status: 500 });
   }
 }
 

@@ -1,13 +1,14 @@
-// app/api/categories/route.ts
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import Post from "@/models/Post";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  await connectDB();
+  const categories = await prisma.post.findMany({
+    select: { category: true },
+    distinct: ["category"],
+  });
 
-  const categories = await Post.distinct("category");
-
-  return NextResponse.json({ categories });
+  return NextResponse.json({
+    categories: categories.map((c) => c.category),
+  });
 }
 

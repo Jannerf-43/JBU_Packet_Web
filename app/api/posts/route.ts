@@ -1,42 +1,29 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import Post from "@/models/Post";
+import { prisma } from "@/lib/prisma";
 
-export async function GET() {
-  await connectDB();
-  const posts = await Post.find().sort({ createdAt: -1 });
-  return NextResponse.json({ posts });
-}
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
 
-export async function POST(req: Request) {
-  await connectDB();
+    const category = searchParams.get("category") || "all";
+    const search = searchParams.get("search") || "";
 
-  // ⚠️ 아주 허술한 관리자 체크: admin=1 쿠키 있으면 무조건 통과
-  const cookie = req.headers.get("cookie") || "";
-  const isAdmin = cookie.includes("admin=1");
+    const posts = await prisma.post.findMany({
+      where: {
+        AND: [
+          category !== "all" ? { category } : {},
+          search ? { title: { contains: search } } : {},
+        ],
+      },
+      orderBy: { id: "desc" },
+    });
 
-  if (!isAdmin) {
-    return NextResponse.json(
-      { error: "관리자만 게시물을 작성할 수 있습니다." },
-      { status: 401 }
-    );
+    // 🔥 배열만 리턴! 가장 중요한 줄
+    return NextResponse.json(posts);
+
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
-
-  const { title, content, category } = await req.json();
-
-  if (!title || !content) {
-    return NextResponse.json(
-      { error: "제목과 내용은 필수입니다." },
-      { status: 400 }
-    );
-  }
-
-  const post = await Post.create({
-    title,
-    content,
-    category: category || "일반",
-  });
-
-  return NextResponse.json({ post });
 }
 

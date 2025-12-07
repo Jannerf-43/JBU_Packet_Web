@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
-  const { postId, content } = await req.json();
-
-  if (!content) {
-    return NextResponse.json({ success: false }, { status: 400 });
-  }
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { postId, content } = body;
 
   const newComment = await prisma.comment.create({
     data: {
