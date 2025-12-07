@@ -73,11 +73,19 @@ export default function HomePage() {
 
   return (
     <div className="wrapper">
-      {/* 
-        내부 개발자 메모 (노출 금지)
-        Ubuntu 테스트 서버 실제 IP: http://192.168.205.129:3000
-        ※ IDS 실습용이라 일부러 남겨둔 취약 정보
-      */}
+
+      {/* 🔽🔽🔽 실제 HTML 소스에 남는 취약 주석 (기능 영향 없음) 🔽🔽🔽 */}
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `<!-- 
+  내부 개발자 메모 (고객 공개 금지)
+  Ubuntu 테스트 서버 내부 IP: http://192.168.205.129:3000
+  NOTE: 디버그 엔드포인트 /api/debug 활성화 상태
+  TODO: 배포 전 삭제 필요 (미삭제 상태)
+-->`,
+        }}
+      />
+      {/* 🔼🔼🔼 여기가 공격자가 소스 보기로 직접 확인하는 정보 🔼🔼🔼 */}
 
       {/* 상단바 */}
       <header style={{ marginBottom: "24px" }}>
