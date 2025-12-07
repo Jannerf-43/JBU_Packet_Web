@@ -1,19 +1,25 @@
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);   // 🔥 string → number 변환
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params; // 🔥 Next.js 16 필수
 
   const post = await prisma.post.findUnique({
-    where: { id },                // 🔥 이제 number 타입이라 오류 없음
+    where: { id: Number(id) },
     include: {
       comments: {
-        orderBy: { createdAt: "desc" }
-      }
-    }
+        orderBy: { createdAt: "desc" },
+      },
+    },
   });
 
   if (!post) {
-    return new Response("Post not found", { status: 404 });
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
-  return Response.json(post);
+  return NextResponse.json(post);
 }
 
