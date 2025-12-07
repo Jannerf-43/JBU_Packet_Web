@@ -79,7 +79,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{
           __html: `<!-- 
   내부 개발자 메모 (고객 공개 금지)
-  Ubuntu 테스트 서버 내부 IP: http://192.168.205.129:3000
+  Ubuntu 테스트 서버 내부 IP: http://192.168.205.129
   NOTE: 디버그 엔드포인트 /api/debug 활성화 상태
   TODO: 배포 전 삭제 필요 (미삭제 상태)
 -->`,
@@ -92,7 +92,7 @@ export default function HomePage() {
         <Link href="/" style={{ textDecoration: "none", color: "#333" }}>
           <h1 className="blog-title">jannerf의 블로그</h1>
         </Link>
-        <p className="blog-subtitle">패킷 분석 · IDS 실습용 취약 블로그</p>
+        <p className="blog-subtitle">패킷 분석 · IDS 실습용 블로그</p>
       </header>
 
       {/* 검색 / 카테고리 */}
