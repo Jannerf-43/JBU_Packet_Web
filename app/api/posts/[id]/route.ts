@@ -1,26 +1,19 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);   // ★ 문자열 → 숫자 변환 (필수)
-
-  if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
-  }
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);   // 🔥 string → number 변환
 
   const post = await prisma.post.findUnique({
-    where: { id },
+    where: { id },                // 🔥 이제 number 타입이라 오류 없음
     include: {
       comments: {
-        orderBy: { createdAt: "desc" },
-      },
-    },
+        orderBy: { createdAt: "desc" }
+      }
+    }
   });
 
   if (!post) {
-    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    return new Response("Post not found", { status: 404 });
   }
 
-  return NextResponse.json(post);
+  return Response.json(post);
 }
 
