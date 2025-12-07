@@ -135,6 +135,12 @@ export default function HomePage() {
         <p style={{ marginTop: "1rem" }}>게시물이 없습니다.</p>
       )}
     </div>
+{/* 
+  TODO: 개발환경 제거 예정
+  내부 테스트 서버(로컬): http://192.168.205.128:3000
+  NOTE: API 디버깅용 엔드포인트 /api/debug
+*/}
+
   );
 }
 
