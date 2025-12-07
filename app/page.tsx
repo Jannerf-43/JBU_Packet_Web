@@ -73,6 +73,12 @@ export default function HomePage() {
 
   return (
     <div className="wrapper">
+      {/* 
+        내부 개발자 메모 (노출 금지)
+        Ubuntu 테스트 서버 실제 IP: http://192.168.205.129:3000
+        ※ IDS 실습용이라 일부러 남겨둔 취약 정보
+      */}
+
       {/* 상단바 */}
       <header style={{ marginBottom: "24px" }}>
         <Link href="/" style={{ textDecoration: "none", color: "#333" }}>
@@ -135,12 +141,6 @@ export default function HomePage() {
         <p style={{ marginTop: "1rem" }}>게시물이 없습니다.</p>
       )}
     </div>
-{/* 
-  TODO: 개발환경 제거 예정
-  내부 테스트 서버(로컬): http://192.168.205.128:3000
-  NOTE: API 디버깅용 엔드포인트 /api/debug
-*/}
-
   );
 }
 
